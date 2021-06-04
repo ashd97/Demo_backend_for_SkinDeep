@@ -1,13 +1,6 @@
 --(c) MIT License 2021 ashd97
 
--- We will try to use Optimistic concurrency control 
--- https://en.wikipedia.org/wiki/Optimistic_concurrency_control
-
--- TODO
--- CREATE FUNCTION files.add_worker_log ..
--- 
-
--- CREATE DATABASE sh_db0_dev;
+-- We are using self-made locking-based queue.
 
 -- echo "alter database sh_db0_dev rename to delete_me; DROP database delete_me;" | psql -tAx -U postgres
 
@@ -661,4 +654,4 @@ CREATE FUNCTION files.clean_files_of_broken_workers( ) RETURNS void
 ALTER FUNCTION files.clean_files_of_broken_workers( ) OWNER TO postgres;
     
 
-
+-- Time for a cup of tea!
