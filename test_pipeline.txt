@@ -1,0 +1,36 @@
+[ SET:ORIGINAL_LIGANDS ]
+    VARCLASS Structures
+    FILES ligand_smiles.smi
+
+[ SET:GRID_1 ]
+    VARCLASS Grid
+    FILES ../receptor-grid_site2.zip
+
+[ STAGE:LIGPREP ]
+    STAGECLASS              ligprep.LigPrepStage
+    INPUTS                  ORIGINAL_LIGANDS
+    OUTPUTS                 LIGPREP_OUT
+
+[ STAGE:POSTLIGPREP ]
+    STAGECLASS              ligprep.PostLigPrepStage
+    INPUTS                  LIGPREP_OUT
+    OUTPUTS                 POSTLIGPREP_OUT
+
+[ STAGE:DOCK_XP_1 ]
+    STAGECLASS              glide.DockingStage
+	PRECISION               XP
+	DOCKING_METHOD          confgen # non-rigid?! Will that change target and make coordinates incomparable?
+	CORE_DEFINITION         all
+	POSES_PER_LIG           16
+	POSTDOCK                True
+	POSTDOCK_NPOSE          10
+    INPUTS                  POSTLIGPREP_OUT, GRID_1
+    OUTPUTS                 XP_OUT_1
+
+# Wrong, does not do what I thought.
+# Need to just disable cleaning
+#[ STAGE:GEN_OUT ]
+#    STAGECLASS              convert.ConvertStage
+#    INPUTS                  HTVS_OUT_1
+#    OUTFORMAT               maestro
+#    OUTPUTS                 test_pipeline_out
