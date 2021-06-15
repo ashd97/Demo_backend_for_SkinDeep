@@ -14,3 +14,5 @@ Attach to specific launched container to check the initialization:
 docker ps -a
 
 docker exec -it CONTAINER_ID /bin/bash
+
+Check official image by tag here https://hub.docker.com/_/postgres
