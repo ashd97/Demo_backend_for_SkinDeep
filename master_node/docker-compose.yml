@@ -1,0 +1,21 @@
+version: '3.7'
+services:
+    postgres:
+        image: postgres:12.7
+        restart: always
+        environment:
+          - POSTGRES_DB=sh_db0_dev
+          - POSTGRES_USER=postgres
+          - POSTGRES_PASSWORD=postgres
+        logging:
+          options:
+            max-size: 128m
+            max-file: "3"
+        ports:
+          - '5432:5432'
+        volumes: 
+          - ./postgres-data:/var/lib/postgresql/data
+          - ./postgresql.conf:/etc/postgresql/postgresql.conf
+          - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
+          - ./init/sh_db0_schema_creation_script.sql:/docker-entrypoint-initdb.d/sh_db0_schema_creation_script.sql
+        command: postgres -c config_file=/etc/postgresql/postgresql.conf
