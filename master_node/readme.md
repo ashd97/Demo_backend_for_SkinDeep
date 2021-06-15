@@ -1,4 +1,4 @@
-You can run postgres db in docker, but from a subjective point of view, it can only be if there is a need to limit app memory.
+You can run postgres db in a docker, but from a subjective point of view, you really need this if there is a need to limit app memory.
 Postgres has enough HA solutions, like Stolon, Patroni.
 
 This is just a sample. So cd to this folder then run
