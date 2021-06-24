@@ -19,3 +19,43 @@ services:
           - ./pg_hba.conf:/etc/postgresql/pg_hba.conf
           - ./init/sh_db0_schema_creation_script.sql:/docker-entrypoint-initdb.d/sh_db0_schema_creation_script.sql
         command: postgres -c config_file=/etc/postgresql/postgresql.conf
+
+    minio-server:
+        container_name: minio-server
+        environment:
+          - COMPOSE_HTTP_TIMEOUT=120 # default is 60
+        image: minio/minio
+        volumes:
+          - ./data:/data
+        ports:
+         - '9000:9000'
+        environment:
+         MINIO_ACCESS_KEY: minioadmin
+         MINIO_SECRET_KEY: minioadmin
+        command: server /data
+
+    minio-client:
+        container_name: minio-client
+        environment:
+          - COMPOSE_HTTP_TIMEOUT=120 # default is 60
+        image: minio/mc
+        depends_on:
+          - minio-server
+        environment:
+          MINIO_ACCESS_KEY: minioadmin
+          MINIO_SECRET_KEY: minioadmin
+        entrypoint:
+            /bin/sh -c "
+            /usr/bin/mc config host rm local;
+            /usr/bin/mc config host add --quiet --api s3v4 local http://minio-server:9000 minioadmin minioadmin;
+            /usr/bin/mc mb --quiet local/input;
+            /usr/bin/mc mb --quiet local/output;
+            echo 'check minio/mc' > input.txt;
+            /usr/bin/mc cp input.txt local/input;
+            /usr/bin/mc policy download local/input;
+            /usr/bin/mc policy set public local/input;
+            /usr/bin/mc policy set public local/output;
+            exit 0; "
+        volumes:
+         - .:/data
+        command: bin/bash
